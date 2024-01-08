@@ -116,20 +116,25 @@ const contract = new web3.eth.Contract(contractABI, contractAddress);
 
 // Function to get candidates from the smart contract
 async function getCandidates() {
+  console.log('Fetching candidates from the smart contract...');
   const count = await contract.methods.candidatesCount().call();
+  console.log('Number of candidates:', count);
   const candidates = [];
 
   for (let i = 1; i <= count; i++) {
+    console.log('Fetching candidate with ID:', i);
     const candidate = await contract.methods.candidates(i).call();
     candidates.push(candidate);
   }
-
+console.log('Candidates fetched:', candidates);
   return candidates;
 }
 
 // Function to display candidates in the HTML page
 async function displayCandidates() {
+  console.log('Displaying candidates on the HTML page...');
   const candidates = await getCandidates();
+  console.log('Candidates to be displayed:', candidates);
   const optionsDiv = document.getElementById('votingOptions');
   const select = document.getElementById('selectedOption');
 
@@ -143,6 +148,7 @@ async function displayCandidates() {
     selectOption.text = candidate.name;
     select.appendChild(selectOption);
   });
+  console.log('Candidates displayed successfully.');
 }
 
 // Display candidates when the page loads
@@ -151,6 +157,8 @@ displayCandidates();
 // Example: Send a transaction to the smart contract using a Ganache account address
 document.getElementById('voteButton').addEventListener('click', async () => {
   const selectedOption = document.getElementById('selectedOption').value;
+  console.log('Voting for candidate with ID:', selectedOption);
   await contract.methods.vote(selectedOption).send({ from: ganacheAccount });
+  console.log('Vote submitted successfully.');
   displayCandidates(); // Refresh candidates after voting
 });
